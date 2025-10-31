@@ -13,13 +13,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config();
-connectdb();
+// Assuming connectdb is defined elsewhere
+// connectdb(); 
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from frontend folder
+// Serve static files from frontend folder (for CSS, JS, etc.)
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // API Routes
@@ -34,12 +35,12 @@ app.get("/health", (req, res) => {
   });
 });
 
-// Root endpoint
+// Root endpoint: Serves index.html when user hits the base URL
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
 
-// Catch-all handler - must be last
+// Catch-all handler - redirects non-API requests back to index.html (important for client-side routing)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
@@ -48,6 +49,10 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/health`);
+  const url = `http://localhost:${PORT}`;
+  console.log(`\n======================================================`);
+  console.log(`  🚀 Server Started!`);
+  console.log(`  Access your Frontend application here: ${url}`);
+  console.log(`  Health Check URL: ${url}/health`);
+  console.log(`======================================================\n`);
 });
