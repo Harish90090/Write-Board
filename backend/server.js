@@ -7,34 +7,47 @@ import path from "path";
 import { fileURLToPath } from 'url';
 
 const app = express();
+
+// Fix for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config();
 connectdb();
 
-// CORS for development
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from 'frontend' directory
-app.use(express.static(path.join(__dirname, 'frontend')));
+// Serve static files from frontend folder
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // API Routes
 app.use("/api/notes", notesRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "OK", message: "Server is running" });
+  res.status(200).json({ 
+    status: "OK", 
+    message: "Server is running",
+    timestamp: new Date().toISOString()
+  });
 });
 
-// Serve frontend for all other routes
+// Root endpoint
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
+});
+
+// Catch-all handler - must be last
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+  res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
 
-app.listen(5001, () => {
-  console.log("Server is running on port 5001");
-  console.log("Frontend is served at: http://localhost:5001");
-  console.log("API endpoints available at: http://localhost:5001/api/notes");
+// Use Render's port or default to 5001
+const PORT = process.env.PORT || 5001;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`Health check: http://localhost:${PORT}/health`);
 });
