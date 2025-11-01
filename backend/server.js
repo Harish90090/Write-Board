@@ -50,9 +50,5 @@ const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
   const url = `http://localhost:${PORT}`;
-  console.log(`\n======================================================`);
-  console.log(`  🚀 Server Started!`);
-  console.log(`  Access your Frontend application here: ${url}`);
-  console.log(`  Health Check URL: ${url}/health`);
-  console.log(`======================================================\n`);
+
 });
